@@ -3,6 +3,7 @@ package vandy.mooc.model;
 import java.lang.ref.WeakReference;
 
 import vandy.mooc.MVP;
+import vandy.mooc.common.DownloadUtils;
 import android.content.Context;
 import android.net.Uri;
 
@@ -74,7 +75,7 @@ public class ImageDownloadsModel
     public Uri downloadImage(Context context,
                              Uri url,
                              Uri directoryPathname) {
-        // @@ TODO -- You fill in here, replacing "null" with the appropriate code.
-    	return null;
+        // @@ TODO -- You fill in here, replacing "null" with the appropriate code.    	
+    	return DownloadUtils.downloadImage(context, url, directoryPathname);
     }
 }

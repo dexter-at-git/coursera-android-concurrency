@@ -3,6 +3,7 @@ package edu.vandy.presenter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -124,7 +125,7 @@ public class PalantiriPresenter
                 // identifies each Being.
                 // TODO -- you fill in here by replacing "return null"
                 // with the appropriate code.
-                return null;
+                return new BeingThread(runnable, mBeingCount.getAndIncrement(), PalantiriPresenter.this);
             }
         };
 
@@ -361,6 +362,26 @@ public class PalantiriPresenter
         // ThreadFactory instance.  Finally, iterate through all the
         // BeingTasks and execute them on the threadPoolExecutor.
         // TODO - You fill in here.
+    	mBeingsTasks = new ArrayList<BeingAsyncTask>();
+    	
+		for (int index = 0; index < beingCount; index++) {			
+			BeingAsyncTask task = new BeingAsyncTask(index, mExitBarrier);
+			mBeingsTasks.add(task);			
+		}
+		
+		int cpuCount = Runtime.getRuntime().availableProcessors();
+		int corePoolSize = cpuCount + 1;
+		int maxPoolSize = cpuCount * 2 + 1;
+		int keepAlive = 1;
+		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(beingCount);
+
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(beingCount,
+				beingCount, 0, TimeUnit.SECONDS, workQueue,
+				mThreadFactory);
+		
+		for (BeingAsyncTask task : mBeingsTasks) {
+			task.executeOnExecutor(executor, PalantiriPresenter.this);
+		}	
     }
 
     /**

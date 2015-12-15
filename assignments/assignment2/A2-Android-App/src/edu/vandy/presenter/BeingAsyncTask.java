@@ -1,5 +1,6 @@
 package edu.vandy.presenter;
 
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 
 import android.os.AsyncTask;
@@ -64,7 +65,7 @@ public class BeingAsyncTask
                 // been cancelled.
                 // TODO -- you fill in here by replacing "false" with
                 // the appropriate method call to an AsyncTask method.
-                if (false) {
+                if (this.isCancelled()) {
                     // If we've been instructed to stop gazing, notify
                     // the UI and exit gracefully.
                     presenter.mView.get().threadShutdown(mIndex);
@@ -74,6 +75,7 @@ public class BeingAsyncTask
                 // Show that we're waiting on the screen.
                 // TODO -- you fill in here with the appropriate
                 // call to an AsyncTask method.
+                publishProgress(presenter.mView.get().markWaiting(mIndex));
 
                 // Get a Palantir - this call blocks if there are no
                 // available Palantiri.
@@ -94,10 +96,12 @@ public class BeingAsyncTask
                 // Mark it as used on the screen.
                 // TODO -- you fill in here with the appropriate
                 // call to an AsyncTask method.
+                publishProgress(presenter.mView.get().markUsed(palantir.getId()));
 
                 // Show that we're gazing on the screen.
                 // TODO -- you fill in here with the appropriate
                 // call to an AsyncTask method.
+                publishProgress(presenter.mView.get().markGazing(mIndex));
 
                 // Gaze at my Palantir for the alloted time.
                 palantir.gaze();
@@ -105,11 +109,13 @@ public class BeingAsyncTask
                 // Show that we're no longer gazing.
                 // TODO -- you fill in here with the appropriate
                 // call to an AsyncTask method.
+                publishProgress(presenter.mView.get().markIdle(mIndex));
                 Utils.pauseThread(500);
 
                 // Mark the Palantir as being free.
                 // TODO -- you fill in here with the appropriate call
                 // to an AsyncTask method.
+                publishProgress(presenter.mView.get().markFree(palantir.getId()));
                 Utils.pauseThread(500);
 
                 // Tell the double-checker that we're about to
@@ -148,6 +154,7 @@ public class BeingAsyncTask
         // TODO -- you fill in here with the appropriate call to
         // the runnableCommands that will cause the progress
         // update to be displayed in the UI thread.
+    	runnableCommands[0].run();
     }
 
     /**

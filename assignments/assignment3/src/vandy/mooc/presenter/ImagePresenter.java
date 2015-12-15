@@ -2,17 +2,27 @@ package vandy.mooc.presenter;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import vandy.mooc.MVP;
+import vandy.mooc.common.BitmapUtils;
+import vandy.mooc.common.GenericAsyncTask;
 import vandy.mooc.common.GenericPresenter;
 import vandy.mooc.common.Utils;
+import vandy.mooc.model.ImageDownloadAsyncTask;
 import vandy.mooc.model.ImageDownloadsModel;
+import vandy.mooc.utils.loader.ImageLoader;
+import vandy.mooc.utils.loader.ImageLoaderThreadPool;
+import vandy.mooc.utils.loader.ImageLoaderWorkOrder;
+import vandy.mooc.utils.loader.ImageLoaderWorkResult;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.AsyncTask;
 import android.util.Log;
 
 /**
@@ -92,7 +102,7 @@ public class ImagePresenter
         
         // Initialize the list of URLs.
         mUrlList = new ArrayList<Uri>();
-
+        
         // Finish the initialization steps.
         resetFields();
 
@@ -194,9 +204,18 @@ public class ImagePresenter
             // downloading and filtering should be performed in
             // separate AsyncTask instances, which should run
             // concurrently via the AsyncTask.THREAD_POOL_EXECUTOR and
-            // executeOnExecutor().
+            // executeOnExecutor().  
+            // TODO -- you fill in here.            
+			for (int index = 0; index < mUrlList.size(); index++) {
+				final Uri uri = mUrlList.get(index);
 
-            // TODO -- you fill in here.
+				ImageDownloadAsyncTask downloadTask = new ImageDownloadAsyncTask(
+						getActivityContext(), mDirectoryPathname, this);
+
+				downloadTask.executeOnExecutor(
+						ImageLoaderThreadPool.MY_THREAD_POOL_EXECUTOR, uri);
+			}	
+
         }
     }
 

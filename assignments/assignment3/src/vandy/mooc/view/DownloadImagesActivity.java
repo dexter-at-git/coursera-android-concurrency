@@ -131,9 +131,12 @@ public class DownloadImagesActivity
      */
     public void addUrl(View view) {
         // Get the user input (if any).
-        final String url =
+        String url =
             mUrlEditText.getText().toString();
-
+        
+        //url = "http://www.dre.vanderbilt.edu/~schmidt/slow.jpg";
+        //url = "http://www.dre.vanderbilt.edu/~schmidt/uci.png";
+        
         // Do sanity check for syntactic validity of the URL.
         if (URLUtil.isValidUrl(url)) {
             // Add valid URL to running list for download.
